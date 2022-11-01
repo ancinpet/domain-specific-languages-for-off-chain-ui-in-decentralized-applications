@@ -3,7 +3,7 @@ My master thesis - Domain-Specific Languages for Off-chain UI in Decentralized A
 
 Created for the CCMi research group. https://ccmi.fit.cvut.cz/en/
 
-There are two applications developed as part of the thesis.
+There are two applications developed as part of the thesis. Both use Blazor framework.
 A form designer for smart contract flows (creates a FE model) and a form interpret (renders the FE model and allows user to interact with smart contracts).
 Both applications are also available separately:
 
