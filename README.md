@@ -6,5 +6,7 @@ Created for the CCMi research group. https://ccmi.fit.cvut.cz/en/
 There are two applications developed as part of the thesis.
 A form designer for smart contract flows (creates a FE model) and a form interpret (renders the FE model and allows user to interact with smart contracts).
 Both applications are also available separately:
+
 https://github.com/ancinpet/smart-contract-fe-designer
+
 https://github.com/ancinpet/smart-contract-fe-wallet
