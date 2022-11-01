@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+	  <BlazorEnableCompression>false</BlazorEnableCompression>
+	  <PublishTrimmed>false</PublishTrimmed>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BlazorMonaco" Version="2.0.0" />
+    <PackageReference Include="MatBlazor" Version="2.9.0-develop-042" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.4" PrivateAssets="all" />
+    <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
+	<TrimmerRootAssembly Include="System.Private.DataContractSerialization" />
+  </ItemGroup>
+
+</Project>

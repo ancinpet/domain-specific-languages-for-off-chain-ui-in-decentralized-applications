@@ -1,0 +1,89 @@
+﻿@page "/"
+@using System.IO
+@using System.Diagnostics
+@using dascontract_forms_editor.Pages.Renderer
+@inject IJSRuntime js
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm" style="max-width:55vw;">
+        <div style="position:fixed;min-width:55vw;">
+            <MatButton OnClick="@NewFile">New</MatButton>
+		    <MatButton style="position:relative">Upload<MatFileUpload OnChange="@UploadFile" AllowMultiple="false" style="width:100%;height:1%;opacity:0;position:absolute" Label=""></MatFileUpload></MatButton>
+            <MatButton OnClick="@SaveFile">Save</MatButton>
+            <MatButton OnClick="@RenderContent">Render</MatButton>
+            <MatButton TrailingIcon="@valid_button_icon" OnClick="@ValidateContent">Model valid:</MatButton>
+            <div id="code-editor" style="max-width: 50vw;">
+			    <MonacoEditor @ref="_editor" Id="code-editor" ConstructionOptions="EditorConstructionOptions" />
+		    </div>
+        </div>
+    </div>
+    <div class="col-sm" style="max-width:48vw">
+        <FormsRenderer @ref="formsRenderer"></FormsRenderer>
+    </div>
+  </div>
+</div>
+
+
+@code {
+    string valid_button_icon = "mode_standby";
+    FormsRenderer formsRenderer;
+    private MonacoEditor _editor { get; set; }
+    private string defaultEditorText = "<ContractForms Name=\"Manage properties\">\n    <Form Label=\"My first form\">\n        <FieldGroup>\n            <SingleLineField Label=\"Hello world\" />\n        </FieldGroup>\n    </Form>\n</ContractForms>";
+ 
+    void NewFile(MouseEventArgs e) {
+        _editor.SetValue(defaultEditorText);
+    }
+
+    async void ValidateContent(MouseEventArgs e) {
+        if (formsRenderer.validModel(await _editor.GetValue())) {
+            valid_button_icon = "check_circle_outline";
+        } else {
+            valid_button_icon = "not_interested";
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+
+    async void RenderContent(MouseEventArgs e) {
+        ValidateContent(null);
+        formsRenderer.renderModel(await _editor.GetValue());        
+        await InvokeAsync(StateHasChanged);
+    }
+
+    async void SaveFile(MouseEventArgs e) {
+        var bytes = System.Text.Encoding.UTF8.GetBytes(await _editor.GetValue());
+        await FileUtil.SaveAs(js, "DasForms.xml", bytes);
+    }
+
+    async Task UploadFile(IMatFileUploadEntry[] files) {
+        try {
+            var file = files.FirstOrDefault();
+            if (file == null) {
+                return;
+            }
+ 
+            using (var stream = new MemoryStream()) {
+                await file.WriteToStreamAsync(stream);
+                stream.Seek(0, SeekOrigin.Begin);
+                using (var reader = new StreamReader(stream)) {
+                    await _editor.SetValue(await reader.ReadToEndAsync());
+                }
+            }
+        } catch (Exception e) {
+            Console.WriteLine("Error while uploading file!\n" + $"Error:\n{e.Message}\n{e.StackTrace}");
+            await _editor.SetValue($"Error:\n{e.Message}\n{e.StackTrace}");
+        } finally {
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private StandaloneEditorConstructionOptions EditorConstructionOptions(MonacoEditor editor)
+	{
+		return new StandaloneEditorConstructionOptions
+		{
+			Language = "xml",
+			Value = defaultEditorText,
+            ScrollBeyondLastLine = false
+		};
+	}
+}

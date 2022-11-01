@@ -1,0 +1,10 @@
+﻿
+
+@if (!String.IsNullOrEmpty(form?.FuncBind)) {
+    <MatButton Raised="true" Style="height:3em;font-size:1.3em;">Submit</MatButton>
+}
+
+@code {
+    [CascadingParameter]
+    Form form { get; set; }
+}

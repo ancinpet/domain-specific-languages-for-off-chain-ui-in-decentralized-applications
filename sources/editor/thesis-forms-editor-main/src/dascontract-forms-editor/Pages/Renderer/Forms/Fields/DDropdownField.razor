@@ -1,0 +1,32 @@
+﻿
+
+
+@if (!String.IsNullOrEmpty(field.Description)) {
+    <MatSelect Label="@field.Label" @bind-Value="@field.Data" Outlined="true" Style="min-width: calc(100% - 3em)">
+        @for (int i = 0; i < field.Options.Count; ++i) {
+            int index = i;
+            <MatOption Disabled="@field.ReadOnly" TValue="int?" Value="index">@field.Options[index]</MatOption>
+        }
+    </MatSelect>
+    <MatTooltip Tooltip="@field.Description">
+        <div @ref="context.Current" style="display:inline-block;">
+            <MatIcon Style="font-size:2.2em;vertical-align:middle;">help_outline</MatIcon>
+        </div>
+    </MatTooltip>
+} else {
+    <MatSelect Label="@field.Label" @bind-Value="@field.Data" Outlined="true" Style="min-width: 100%">
+        @for (int i = 0; i < field.Options.Count; ++i) {
+            int index = i;
+            <MatOption Disabled="@field.ReadOnly" TValue="int?" Value="index">@field.Options[index]</MatOption>
+        }
+    </MatSelect>
+}
+
+@code {
+    [CascadingParameter]
+    Form form { get; set; }
+    [CascadingParameter]
+    FieldGroup group { get; set; }
+    [CascadingParameter]
+    DropdownField field { get; set; }
+}
